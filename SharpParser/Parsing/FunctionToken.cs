@@ -69,6 +69,20 @@ namespace SharpParser.Parsing
 
         #region Methods
         /// <summary>
+        /// Returns true if all properties of each token are the same.
+        /// </summary>
+        /// <param name="obj">
+        /// The token to compare against for equality.
+        /// </param>
+        public bool Equals(FunctionToken obj)
+        {
+            return (Variant == obj.Variant &&
+                Format == obj.Format &&
+                NumberOfArgs == obj.NumberOfArgs &&
+                Operation == obj.Operation);
+        }
+
+        /// <summary>
         /// During evaluation, all involved numbers are passed to this
         /// function and returned.
         /// </summary>

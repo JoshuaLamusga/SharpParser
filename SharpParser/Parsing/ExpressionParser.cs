@@ -245,13 +245,13 @@ namespace SharpParser.Parsing
 
         #region Methods
         /// <summary>
-        /// Parses a user-entered infix mathematical expression.
+        /// Parses a non-relational user-entered infix math expression.
         /// </summary>
         /// <param name="expression">
         /// An expression composed of numbers and included basic operators
         /// and functions. No implicit multiplication.
         /// </param>
-        public static decimal ParseExpression(string expression)
+        public static decimal Eval(string expression)
         {
             decimal result = 0;
 
@@ -301,7 +301,7 @@ namespace SharpParser.Parsing
 
                 //Evaluates sub-expressions.
                 expression = expressionLHS +
-                    ParseSubExpression(subExpression, subExpressionFunc) +
+                    EvalSub(subExpression, subExpressionFunc) +
                     expression.Substring(subExpressionEnd);
 
                 //Stops and returns when a single numeric value is left.
@@ -313,8 +313,8 @@ namespace SharpParser.Parsing
         }
 
         /// <summary>
-        /// Parses an expression without parentheses, optionally as arguments
-        /// to a given function.
+        /// Parses a non-relational expression without parentheses with an
+        /// optional argument to treat the expression as function arguments.
         /// </summary>
         /// <param name="subExpression">
         /// A mathematical expression without parentheses.
@@ -326,7 +326,7 @@ namespace SharpParser.Parsing
         /// A parsing exception is thrown when an empty expression is
         /// provided or the expression is malformed.
         /// </exception>
-        private static decimal ParseSubExpression(
+        private static decimal EvalSub(
             string subExpression,
             FunctionToken function)
         {
@@ -356,7 +356,7 @@ namespace SharpParser.Parsing
                 //Simplifies each argument.
                 for (int i = 0; i < args.Length; i++)
                 {
-                    argVals[i] = ParseSubExpression(args[i], null);
+                    argVals[i] = EvalSub(args[i], null);
                 }
 
                 //Applies functions.
@@ -630,7 +630,7 @@ namespace SharpParser.Parsing
         }
 
         /// <summary>
-        /// Adds the given token as a function.
+        /// Adds a copy of the given token as a function.
         /// </summary>
         /// <exception cref="ArgumentNullException">
         /// Thrown when a null token is given.
@@ -642,11 +642,13 @@ namespace SharpParser.Parsing
                 throw new ArgumentNullException("token");
             }
 
-            functions.Add(token);
+            functions.Add(new FunctionToken(
+                token.Format.ToLower(),
+                token.NumberOfArgs));
         }
 
         /// <summary>
-        /// Adds the given token as an identifier.
+        /// Adds a copy of the given token as an identifier.
         /// </summary>
         /// <exception cref="ArgumentNullException">
         /// Thrown when a null token is given.
@@ -658,11 +660,13 @@ namespace SharpParser.Parsing
                 throw new ArgumentNullException("token");
             }
 
-            identifiers.Add(token);
+            identifiers.Add(new IdentifierToken(
+                token.Format.ToLower(),
+                token.NumericValue));
         }
 
         /// <summary>
-        /// Adds the given token as an operator.
+        /// Adds a copy of the given token as an operator.
         /// </summary>
         /// <exception cref="ArgumentNullException">
         /// Thrown when a null token is given.
@@ -674,12 +678,16 @@ namespace SharpParser.Parsing
                 throw new ArgumentNullException("token");
             }
 
-            operators.Add(token);
+            operators.Add(new OperatorToken(
+                token.OpPlacement,
+                token.OpAssociativity,
+                token.Precedence,
+                token.Format.ToLower()));
         }
 
         /// <summary>
-        /// Removes the given token from the list of functions, if it
-        /// exists. Returns true if found; false otherwise.
+        /// Removes the first match for the given token from the list of
+        /// functions, if it exists. Returns true if found; false otherwise.
         /// </summary>
         /// <exception cref="ArgumentNullException">
         /// Thrown when a null token is given.
@@ -691,12 +699,22 @@ namespace SharpParser.Parsing
                 throw new ArgumentNullException("token");
             }
 
-            return functions.Remove(token);
+            //Removes the first match, if any.
+            for (int i = functions.Count; i > 0; i--)
+            {
+                if (token.Equals(functions[i]))
+                {
+                    functions.RemoveAt(i);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
-        /// Removes the given token from the list of identifiers, if it
-        /// exists. Returns true if found; false otherwise.
+        /// Removes the first match for the given token from the list of
+        /// identifiers, if it exists. Returns true if found; false otherwise.
         /// </summary>
         /// <exception cref="ArgumentNullException">
         /// Thrown when a null token is given.
@@ -708,12 +726,22 @@ namespace SharpParser.Parsing
                 throw new ArgumentNullException("token");
             }
 
-            return identifiers.Remove(token);
+            //Removes the first match, if any.
+            for (int i = identifiers.Count; i > 0; i--)
+            {
+                if (token.Equals(identifiers[i]))
+                {
+                    identifiers.RemoveAt(i);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
-        /// Removes the given token from the list of operators, if it
-        /// exists. Returns true if found; false otherwise.
+        /// Removes the first match for the given token from the list of
+        /// operators, if it exists. Returns true if found; false otherwise.
         /// </summary>
         /// <exception cref="ArgumentNullException">
         /// Thrown when a null token is given.
@@ -725,7 +753,17 @@ namespace SharpParser.Parsing
                 throw new ArgumentNullException("token");
             }
 
-            return operators.Remove(token);
+            //Removes the first match, if any.
+            for (int i = operators.Count; i > 0; i--)
+            {
+                if (token.Equals(operators[i]))
+                {
+                    operators.RemoveAt(i);
+                    return true;
+                }
+            }
+
+            return false;
         }
         #endregion
     }

@@ -133,6 +133,23 @@ namespace SharpParser.Parsing
 
         #region Methods
         /// <summary>
+        /// Returns true if all properties of each token are the same.
+        /// </summary>
+        /// <param name="obj">
+        /// The token to compare against for equality.
+        /// </param>
+        public bool Equals(OperatorToken obj)
+        {
+            return (Variant == obj.Variant &&
+                Format == obj.Format &&
+                OpPlacement == obj.OpPlacement &&
+                OpAssociativity == obj.OpAssociativity &&
+                Precedence == obj.Precedence &&
+                NumberOfArgs == obj.NumberOfArgs &&
+                Operation == obj.Operation);
+        }
+
+        /// <summary>
         /// During evaluation, all involved numbers are passed to this
         /// operator and returned.
         /// </summary>

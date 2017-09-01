@@ -50,5 +50,20 @@ namespace SharpParser.Parsing
             NumericValue = value;
         }
         #endregion
+
+        #region Methods
+        /// <summary>
+        /// Returns true if all properties of each token are the same.
+        /// </summary>
+        /// <param name="obj">
+        /// The token to compare against for equality.
+        /// </param>
+        public bool Equals(NumericToken obj)
+        {
+            return (Variant == obj.Variant &&
+                Format == obj.Format &&
+                NumericValue == obj.NumericValue);
+        }
+        #endregion
     }
 }

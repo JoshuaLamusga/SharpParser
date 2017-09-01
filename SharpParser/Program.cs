@@ -16,7 +16,7 @@ namespace SharpParser
 
                 try
                 {
-                    Console.WriteLine(ExpressionParser.ParseExpression(userInput));
+                    Console.WriteLine(ExpressionParser.Eval(userInput));
                 }
                 catch (ParsingException e)
                 {
