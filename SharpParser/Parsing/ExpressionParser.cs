@@ -120,8 +120,15 @@ namespace SharpParser.Parsing
                     return value;
                 }));
 
+            NEG = new OperatorToken(TokenOpPlacement.Right,
+                TokenOpAssociativity.Right, 5, "-",
+                new Func<decimal[], decimal>((num) =>
+                {
+                    return -num[0];
+                }));
+
             EXP = new OperatorToken(TokenOpPlacement.Both,
-                TokenOpAssociativity.Right, 5, "^",
+                TokenOpAssociativity.Right, 4, "^",
                 new Func<decimal[], decimal>((num) =>
                 {
                     try
@@ -134,13 +141,6 @@ namespace SharpParser.Parsing
                         throw new ParsingException(num[0] + " ^ " + num[1] +
                             " is too large to compute.", e);
                     }
-                }));
-
-            NEG = new OperatorToken(TokenOpPlacement.Right,
-                TokenOpAssociativity.Right, 4, "-",
-                new Func<decimal[], decimal>((num) =>
-                {
-                    return -num[0];
                 }));
 
             MOD = new OperatorToken(TokenOpPlacement.Both,
