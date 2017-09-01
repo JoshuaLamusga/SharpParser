@@ -5,37 +5,15 @@ namespace SharpParser.Parsing
     /// <summary>
     /// Represents a single token for evaluation.
     /// </summary>
-    public class OperatorToken : ParsingToken
+    public class RelOperatorToken : ParsingToken
     {
         #region Properties
-        /// <summary>
-        /// Indicates which side of the operator the operand is on, or if
-        /// the operator is binary.
-        /// </summary>
-        public TokenOpPlacement OpPlacement { get; protected set; }
-
-        /// <summary>
-        /// Sets whether an expression such as a ~ b ~ c is evaluated
-        /// left-to-right or right-to-left.
-        /// </summary>
-        public TokenOpAssociativity OpAssociativity { get; protected set; }
-
-        /// <summary>
-        /// The order in which operator tokens are evaluated.
-        /// </summary>
-        public int Precedence { get; protected set; }
-
-        /// <summary>
-        /// The number of arguments to be used.
-        /// </summary>
-        public int NumberOfArgs { get; protected set; }
-
         /// <summary>
         /// When this operator is used, the input numbers can be accessed as
         /// an array of decimals. The lefthand operand is element 0 for
         /// binary operators.
         /// </summary>
-        public Func<decimal[], decimal> Operation
+        public Func<decimal[], bool> Operation
         {
             get;
             set;
@@ -60,26 +38,9 @@ namespace SharpParser.Parsing
         /// <param name="format">
         /// The unique symbols identifying the operator.
         /// </param>
-        public OperatorToken(
-            TokenOpPlacement opPlacement,
-            TokenOpAssociativity associativity,
-            int precedence,
-            string format)
+        public RelOperatorToken(string format, int numberOfArgs)
         {
-            Variant = TokenType.Operator;
-            OpPlacement = opPlacement;
-            OpAssociativity = associativity;
-            Precedence = precedence;
-
-            if (opPlacement == TokenOpPlacement.Both)
-            {
-                NumberOfArgs = 2;
-            }
-            else
-            {
-                NumberOfArgs = 1;
-            }
-
+            Variant = TokenType.RelOperator;
             Format = format;
             Operation = null;
         }
@@ -105,27 +66,11 @@ namespace SharpParser.Parsing
         /// During evaluation, all involved numbers are passed to this
         /// function and returned.
         /// </param>
-        public OperatorToken(
-            TokenOpPlacement opPlacement,
-            TokenOpAssociativity associativity,
-            int precedence,
-            string format,
-            Func<decimal[], decimal> operation)
+        public RelOperatorToken(string format,
+            int numberOfArgs,
+            Func<decimal[], bool> operation)
         {
-            Variant = TokenType.Operator;
-            OpPlacement = opPlacement;
-            OpAssociativity = associativity;
-            Precedence = precedence;
-
-            if (opPlacement == TokenOpPlacement.Both)
-            {
-                NumberOfArgs = 2;
-            }
-            else
-            {
-                NumberOfArgs = 1;
-            }
-
+            Variant = TokenType.RelOperator;
             Format = format;
             Operation = operation;
         }
@@ -136,7 +81,7 @@ namespace SharpParser.Parsing
         /// During evaluation, all involved numbers are passed to this
         /// operator and returned.
         /// </summary>
-        public void SetOperation(Func<decimal[], decimal> operation)
+        public void SetOperation(Func<decimal[], bool> operation)
         {
             Operation = operation;
         }

@@ -6,6 +6,16 @@
     public enum TokenType
     {
         /// <summary>
+        /// The token represents a named function.
+        /// </summary>
+        Function,
+
+        /// <summary>
+        /// The token represents a named entity with a numeric value.
+        /// </summary>
+        Identifier,
+
+        /// <summary>
         /// The token represents a numeric literal.
         /// </summary>
         Number,
@@ -16,13 +26,8 @@
         Operator,
 
         /// <summary>
-        /// The token represents a named function.
+        /// The token represents a relational operator in an expression.
         /// </summary>
-        Function,
-
-        /// <summary>
-        /// The token represents a named entity with a numeric value.
-        /// </summary>
-        Identifier
+        RelOperator
     }
 }

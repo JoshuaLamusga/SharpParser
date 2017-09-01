@@ -9,6 +9,11 @@ namespace SharpParser.Parsing
     {
         #region Properties
         /// <summary>
+        /// The number of arguments to be used.
+        /// </summary>
+        public int NumberOfArgs { get; protected set; }
+
+        /// <summary>
         /// When this function is used, the input numbers can be accessed as
         /// an array of decimals. As many as provided by the number of
         /// arguments may be used.
@@ -33,12 +38,8 @@ namespace SharpParser.Parsing
         public FunctionToken(string name, int numberOfArgs)
         {
             Variant = TokenType.Function;
-            OpPlacement = TokenOpPlacement.None;
-            OpAssociativity = TokenOpAssociativity.None;
-            Precedence = 0;
             NumberOfArgs = numberOfArgs;
             Format = name;
-            NumericValue = 0;
             Operation = null;
         }
 
@@ -60,12 +61,8 @@ namespace SharpParser.Parsing
             Func<decimal[], decimal> operation)
         {
             Variant = TokenType.Function;
-            OpPlacement = TokenOpPlacement.None;
-            OpAssociativity = TokenOpAssociativity.None;
-            Precedence = 0;
             NumberOfArgs = numberOfArgs;
             Format = name;
-            NumericValue = 0;
             Operation = operation;
         }
         #endregion

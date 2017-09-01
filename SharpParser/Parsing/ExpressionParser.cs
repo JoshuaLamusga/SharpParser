@@ -283,11 +283,13 @@ namespace SharpParser.Parsing
 
                 //Includes functions from sub-expressions.
                 FunctionToken subExpressionFunc = null;
+                int numArgs = subExpression.Split(',').Count();
                 for (int i = 0; i < functions.Count; i++)
                 {
                     FunctionToken candidate = functions[i];
 
-                    if (expressionLHS.EndsWith(candidate.Format))
+                    if (expressionLHS.EndsWith(candidate.Format) &&
+                        candidate.NumberOfArgs == numArgs)
                     {
                         expressionLHS = expressionLHS.Substring(0,
                             expressionLHS.Length - candidate.Format.Length);
@@ -336,31 +338,19 @@ namespace SharpParser.Parsing
                     "provided; there is nothing to process within it.");
             }
 
-            //Functions make a call to this method for each argument.
+            //Parses each argument separately, then applies the function.
             if (function != null)
             {
                 string[] args = subExpression.Split(',');
                 decimal[] argVals = new decimal[args.Length];
 
-                //If wrong number of arguments, errors or selects an overload.
+                //Catches the wrong number of arguments.
                 if (function.NumberOfArgs != args.Length)
                 {
-                    //Finds a correct overload.
-                    var funcOverloads = functions.Where(
-                        o => o.Format == function.Format &&
-                        o.NumberOfArgs == args.Length);
-
-                    if (funcOverloads.Count() != 0)
-                    {
-                        function = funcOverloads.First();
-                    }
-                    else
-                    {
-                        throw new ParsingException("In expression '" + subExpression +
+                    throw new ParsingException("In expression '" + subExpression +
                         "', the number of arguments for " + function.Format +
                         " should be " + function.NumberOfArgs + ", but " +
                         args.Length + " arguments were given.");
-                    }
                 }
 
                 //Simplifies each argument.
@@ -478,7 +468,7 @@ namespace SharpParser.Parsing
             {
                 if (tokens[i] == SUB &&
                     (tokens[i - 1].Variant == TokenType.Operator &&
-                    (tokens[i - 1].NumberOfArgs > 1 ||
+                    ((tokens[i - 1] as OperatorToken).NumberOfArgs > 1 ||
                     tokens[i - 1] == NEG)) ||
                     (tokens[i - 1].Variant == TokenType.Function))
                 {
@@ -489,7 +479,7 @@ namespace SharpParser.Parsing
             //Gets max precedence within sub-expression.
             var opTokens = tokens.Where(o => o.Variant == TokenType.Operator);
             int maxPrecedence = (opTokens.Count() > 0)
-                ? opTokens.Max(o => o.Precedence) : 0;
+                ? opTokens.Max(o => (o as OperatorToken).Precedence) : 0;
 
             //Computes all tokens with equal precedence.
             while (maxPrecedence > 0)
@@ -504,10 +494,11 @@ namespace SharpParser.Parsing
                     (!isRightAssociative && j < tokens.Count))
                 {
                     if (tokens[j].Variant == TokenType.Operator &&
-                        tokens[j].Precedence == maxPrecedence)
+                        (tokens[j] as OperatorToken).Precedence == maxPrecedence)
                     {
-                        decimal value = 0;
+                        OperatorToken opToken = (OperatorToken)tokens[j];
                         List<decimal> argVals = new List<decimal>();
+                        decimal value = 0;
 
                         //Computes adjacent numeric tokens.
                         bool leftValueFound = false;
@@ -516,28 +507,28 @@ namespace SharpParser.Parsing
                         if (j > 0 &&
                             tokens[j - 1].Variant == TokenType.Number)
                         {
-                            argVals.Add(tokens[j - 1].NumericValue);
+                            argVals.Add((tokens[j - 1] as NumericToken).NumericValue);
                             leftValueFound = true;
                         }
                         if (j < tokens.Count - 1 &&
                             tokens[j + 1].Variant == TokenType.Number)
                         {
-                            argVals.Add(tokens[j + 1].NumericValue);
+                            argVals.Add((tokens[j + 1] as NumericToken).NumericValue);
                             rightValueFound = true;
                         }
 
                         //Handles missing arguments.
                         if (!leftValueFound &&
-                            (tokens[j].OpPlacement == TokenOpPlacement.Both ||
-                            tokens[j].OpPlacement == TokenOpPlacement.Left))
+                            (opToken.OpPlacement == TokenOpPlacement.Both ||
+                            opToken.OpPlacement == TokenOpPlacement.Left))
                         {
                             throw new ParsingException("In '" + subExpression +
                                 "', the '" + tokens[j].Format + "' operator " +
                                 "is missing a lefthand operand.");
                         }
                         else if (!rightValueFound &&
-                            (tokens[j].OpPlacement == TokenOpPlacement.Both ||
-                            tokens[j].OpPlacement == TokenOpPlacement.Right))
+                            (opToken.OpPlacement == TokenOpPlacement.Both ||
+                            opToken.OpPlacement == TokenOpPlacement.Right))
                         {
                             throw new ParsingException("In '" + subExpression +
                                 "', the '" + tokens[j].Format + "' operator " +
@@ -545,24 +536,24 @@ namespace SharpParser.Parsing
                         }
 
                         //Applies each operator.
-                        value = (tokens[j] as OperatorToken).Operation(argVals.ToArray());
+                        value = opToken.Operation(argVals.ToArray());
 
                         //Removes affected tokens and inserts new value.
-                        if (tokens[j].OpPlacement ==
+                        if (opToken.OpPlacement ==
                             TokenOpPlacement.Left)
                         {
                             tokens[j] = new NumericToken(value);
                             tokens.RemoveAt(j - 1);
                             j += (isRightAssociative) ? 0 : -1;
                         }
-                        else if (tokens[j].OpPlacement ==
+                        else if (opToken.OpPlacement ==
                             TokenOpPlacement.Right)
                         {
                             tokens[j] = new NumericToken(value);
                             tokens.RemoveAt(j + 1);
                             j += (isRightAssociative) ? 1 : 0;
                         }
-                        else if (tokens[j].OpPlacement ==
+                        else if (opToken.OpPlacement ==
                             TokenOpPlacement.Both)
                         {
                             tokens[j] = new NumericToken(value);
@@ -586,7 +577,7 @@ namespace SharpParser.Parsing
                 //Gets new precedence within sub-expression.
                 opTokens = tokens.Where(o => o.Variant == TokenType.Operator);
                 maxPrecedence = (opTokens.Count() > 0)
-                    ? opTokens.Max(o => o.Precedence) : 0;
+                    ? opTokens.Max(o => (o as OperatorToken).Precedence) : 0;
             }
 
             //Returns the final value.

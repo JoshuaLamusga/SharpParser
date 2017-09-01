@@ -7,6 +7,13 @@ namespace SharpParser.Parsing
     /// </summary>
     public class NumericToken : ParsingToken
     {
+        #region Properties
+        /// <summary>
+        /// The associated numeric value.
+        /// </summary>
+        public decimal NumericValue { get; protected set; }
+        #endregion
+
         #region Constructors
         /// <summary>
         /// Creates a numeric parsing token.
@@ -17,10 +24,6 @@ namespace SharpParser.Parsing
         public NumericToken(string value)
         {
             Variant = TokenType.Number;
-            OpPlacement = TokenOpPlacement.None;
-            OpAssociativity = TokenOpAssociativity.None;
-            Precedence = 0;
-            NumberOfArgs = 0;
             Format = value;
 
             if (Decimal.TryParse(value, out decimal result))
@@ -43,10 +46,6 @@ namespace SharpParser.Parsing
         public NumericToken(decimal value)
         {
             Variant = TokenType.Number;
-            OpPlacement = TokenOpPlacement.None;
-            OpAssociativity = TokenOpAssociativity.None;
-            Precedence = 0;
-            NumberOfArgs = 0;
             Format = value.ToString();
             NumericValue = value;
         }

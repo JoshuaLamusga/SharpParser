@@ -7,6 +7,13 @@ namespace SharpParser.Parsing
     /// </summary>
     public class IdentifierToken : ParsingToken
     {
+        #region Properties
+        /// <summary>
+        /// The associated numeric value.
+        /// </summary>
+        public decimal NumericValue { get; protected set; }
+        #endregion
+
         #region Constructors
         /// <summary>
         /// Creates an identifier parsing token.
@@ -20,10 +27,6 @@ namespace SharpParser.Parsing
         public IdentifierToken(string name, decimal value)
         {
             Variant = TokenType.Identifier;
-            OpPlacement = TokenOpPlacement.None;
-            OpAssociativity = TokenOpAssociativity.None;
-            Precedence = 0;
-            NumberOfArgs = 0;
             Format = name;
             NumericValue = value;
         }
