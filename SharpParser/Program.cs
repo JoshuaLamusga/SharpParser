@@ -1,4 +1,5 @@
 ﻿using System;
+using SharpParser.Parsing;
 
 namespace SharpParser
 {
@@ -6,7 +7,22 @@ namespace SharpParser
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            string userInput = "";
+
+            while (true)
+            {
+                Console.Write("Please enter an expression: ");
+                userInput = Console.ReadLine();
+
+                try
+                {
+                    Console.WriteLine(ExpressionParser.ParseExpression(userInput));
+                }
+                catch (ParsingException e)
+                {
+                    Console.WriteLine("Error: " + e.Message);
+                }
+            }
         }
     }
 }
