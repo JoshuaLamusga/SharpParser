@@ -1,17 +1,15 @@
-﻿using System;
-
-namespace SharpParser.Parsing
+﻿namespace SharpParser.Parsing.Core
 {
     /// <summary>
-    /// Represents a single token for evaluation.
+    /// An identifier token, such as a constant or variable.
     /// </summary>
-    public class IdentifierToken : ParsingToken
+    public class TokenId : Token
     {
         #region Properties
         /// <summary>
         /// The associated numeric value.
         /// </summary>
-        public decimal NumericValue { get; protected set; }
+        public decimal? Value { get; protected set; }
         #endregion
 
         #region Constructors
@@ -24,11 +22,10 @@ namespace SharpParser.Parsing
         /// <param name="value">
         /// The number encapsulated in the token.
         /// </param>
-        public IdentifierToken(string name, decimal value)
+        public TokenId(string name, decimal? value)
         {
-            Variant = TokenType.Identifier;
-            Format = name;
-            NumericValue = value;
+            StrForm = name;
+            Value = value;
         }
 
         /// <summary>
@@ -37,11 +34,10 @@ namespace SharpParser.Parsing
         /// <param name="obj">
         /// The token to compare against for equality.
         /// </param>
-        public bool Equals(IdentifierToken obj)
+        public bool Equals(TokenId obj)
         {
-            return (Variant == obj.Variant &&
-                Format == obj.Format &&
-                NumericValue == obj.NumericValue);
+            return (StrForm == obj.StrForm &&
+                Value == obj.Value);
         }
         #endregion
     }

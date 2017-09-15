@@ -1,5 +1,5 @@
 ﻿using System;
-using SharpParser.Parsing;
+using SharpParser.Parsing.Core;
 
 namespace SharpParser
 {
@@ -7,16 +7,13 @@ namespace SharpParser
     {
         static void Main(string[] args)
         {
-            string userInput = "";
-
             while (true)
             {
                 Console.Write("Please enter an expression: ");
-                userInput = Console.ReadLine();
 
                 try
                 {
-                    Console.WriteLine(ExpressionParser.Eval(userInput));
+                    Console.WriteLine(Parser.Eval(Console.ReadLine()));
                 }
                 catch (ParsingException e)
                 {

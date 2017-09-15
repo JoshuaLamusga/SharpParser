@@ -1,17 +1,17 @@
 ﻿using System;
 
-namespace SharpParser.Parsing
+namespace SharpParser.Parsing.Core
 {
     /// <summary>
-    /// Represents a single token for evaluation.
+    /// A numeric token to store a decimal literal.
     /// </summary>
-    public class NumericToken : ParsingToken
+    public class TokenNum : Token
     {
         #region Properties
         /// <summary>
         /// The associated numeric value.
         /// </summary>
-        public decimal NumericValue { get; protected set; }
+        public decimal Value { get; protected set; }
         #endregion
 
         #region Constructors
@@ -21,14 +21,13 @@ namespace SharpParser.Parsing
         /// <param name="value">
         /// The number encapsulated in the token.
         /// </param>
-        public NumericToken(string value)
+        public TokenNum(string value)
         {
-            Variant = TokenType.Number;
-            Format = value;
+            StrForm = value;
 
             if (Decimal.TryParse(value, out decimal result))
             {
-                NumericValue = result;
+                Value = result;
             }
             else
             {
@@ -43,11 +42,10 @@ namespace SharpParser.Parsing
         /// <param name="value">
         /// The number encapsulated in the token.
         /// </param>
-        public NumericToken(decimal value)
+        public TokenNum(decimal value)
         {
-            Variant = TokenType.Number;
-            Format = value.ToString();
-            NumericValue = value;
+            StrForm = value.ToString();
+            Value = value;
         }
         #endregion
 
@@ -58,11 +56,10 @@ namespace SharpParser.Parsing
         /// <param name="obj">
         /// The token to compare against for equality.
         /// </param>
-        public bool Equals(NumericToken obj)
+        public bool Equals(TokenNum obj)
         {
-            return (Variant == obj.Variant &&
-                Format == obj.Format &&
-                NumericValue == obj.NumericValue);
+            return (StrForm == obj.StrForm &&
+                Value == obj.Value);
         }
         #endregion
     }

@@ -1,9 +1,9 @@
-﻿namespace SharpParser.Parsing
+﻿namespace SharpParser.Parsing.Core
 {
     /// <summary>
-    /// Represents which side of a number operator tokens are expected to be on.
+    /// Determines how operands interact with an operator token.
     /// </summary>
-    public enum TokenOpPlacement
+    public enum Placements
     {
         /// <summary>
         /// For unary tokens that use the preceeding number, like negation.
@@ -16,13 +16,8 @@
         Right,
 
         /// <summary>
-        /// For non-unary tokens.
+        /// For binary tokens.
         /// </summary>
-        Both,
-
-        /// <summary>
-        /// For non-operator tokens.
-        /// </summary>
-        None
+        Both
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SharpParser.Parsing
+namespace SharpParser.Parsing.Core
 {
     /// <summary>
     /// Represents an exception involving parsing mathematical expressions.
