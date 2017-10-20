@@ -13,6 +13,7 @@ namespace SharpParser.Parsing.Core
     /// </summary>
     public static class Parser
     {
+        #region Variables and Properties
         #region Parsing Options
         /// <summary>
         /// If true, numbers next to each other will be multiplied together
@@ -33,7 +34,7 @@ namespace SharpParser.Parsing.Core
         public static bool OptIncludeUnknowns;
         #endregion
 
-        #region Functions
+        #region Function Tokens
         /// <summary>
         /// The sine function for radians.
         /// </summary>
@@ -60,14 +61,14 @@ namespace SharpParser.Parsing.Core
         private static readonly TokenFunc Frnd2;
         #endregion
 
-        #region Identifiers
+        #region Identifier Tokens
         /// <summary>
         /// The mathematical constant, Pi.
         /// </summary>
         private static readonly TokenId Pi;
         #endregion
 
-        #region Operators
+        #region Operator Tokens
         /// <summary>
         /// The addition operator.
         /// </summary>
@@ -154,7 +155,7 @@ namespace SharpParser.Parsing.Core
         private static readonly TokenOp LogOr;
         #endregion
 
-        #region Symbols
+        #region Special Tokens
         /// <summary>
         /// Represents a left parenthesis.
         /// </summary>
@@ -176,6 +177,7 @@ namespace SharpParser.Parsing.Core
         /// A mutable list of all tokens to parse with.
         /// </summary>
         private static List<Token> tokens;
+        #endregion
         #endregion
 
         #region Static Constructor
@@ -614,7 +616,7 @@ namespace SharpParser.Parsing.Core
         /// An expression composed of numbers and included operators,
         /// and functions. No implicit multiplication.
         /// </param>
-        public static object Eval(string expression)
+        public static string Eval(string expression)
         {
             List<Token> tokensList = Tokenize(expression);
             var functions = tokens.OfType<TokenFunc>().ToList();
@@ -1017,8 +1019,7 @@ namespace SharpParser.Parsing.Core
                 }
 
                 //Matches when there are no longer candidates.
-                else if (i != expression.Length - 1 &&
-                    longestMatch != null)
+                else if (longestMatch != null)
                 {
                     //Adds the token, parsing identifiers.
                     if (longestMatch is TokenId tokenAsId &&

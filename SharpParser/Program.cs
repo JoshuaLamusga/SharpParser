@@ -1,5 +1,5 @@
 ﻿using System;
-using SharpParser.Parsing.Core;
+using SharpParser.Parsing.Algebra;
 
 namespace SharpParser
 {
@@ -18,6 +18,10 @@ namespace SharpParser
                 catch (ParsingException e)
                 {
                     Console.WriteLine("Error: " + e.Message);
+                }
+                catch (OverflowException)
+                {
+                    Console.WriteLine("Number too large");
                 }
             }
         }
