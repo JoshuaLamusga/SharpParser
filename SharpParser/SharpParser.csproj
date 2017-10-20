@@ -1,8 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <TargetFramework>netcoreapp1.1</TargetFramework>
+    <ApplicationIcon />
+    <OutputTypeEx>library</OutputTypeEx>
+    <StartupObject />
+    <Description>Parses mathematical expressions with symbolic manipulation</Description>
+    <Copyright>Copyright (C) Joshua Lamusga, 2017</Copyright>
+    <Company>Joshua Lamusga</Company>
+    <Authors>Joshua Lamusga</Authors>
   </PropertyGroup>
 
 </Project>
