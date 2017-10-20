@@ -5,7 +5,7 @@ namespace SharpParser.Parsing.Algebra
     /// <summary>
     /// Represents an exception involving parsing mathematical expressions.
     /// </summary>
-    class ParsingException : Exception
+    public class ParsingException : Exception
     {
         /// <summary>
         /// Creates an empty exception with no message.

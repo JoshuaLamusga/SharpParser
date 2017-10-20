@@ -1,7 +1,7 @@
-﻿using System;
-using SharpParser.Parsing.Algebra;
+﻿using SharpParser.Parsing.Algebra;
+using System;
 
-namespace SharpParser
+namespace ParsingTester
 {
     class Program
     {
