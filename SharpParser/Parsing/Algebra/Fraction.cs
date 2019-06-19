@@ -267,6 +267,11 @@ namespace SharpParser.Parsing.Algebra
         /// </param>
         public bool Equals(Fraction obj)
         {
+            if (obj == null)
+            {
+                return false;
+            }
+
             return (StrForm == obj.StrForm &&
                 Numerator == obj.Numerator &&
                 Denominator == obj.Denominator);
